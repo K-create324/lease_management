@@ -19,6 +19,13 @@ public class Client {
     @OneToMany(mappedBy = "client")
     List<Contract> contracts;
 
+
+    @Lob
+    @Column(nullable = true, name="pdf_file", columnDefinition = "LONGBLOB")
+    private byte[] pdfFile;
+
+
+
     public Client() {
     }
 
@@ -68,5 +75,20 @@ public class Client {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    public List<Contract> getContracts() {
+        return contracts;
+    }
+
+    public void setContracts(List<Contract> contracts) {
+        this.contracts = contracts;
+    }
+
+    public byte[] getPdfFile() {
+        return pdfFile;
+    }
+
+    public void setPdfFile(byte[] pdfFile) {
+        this.pdfFile = pdfFile;
     }
 }

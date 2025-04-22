@@ -4,8 +4,11 @@ import com.example.lease_management.Client;
 import com.example.lease_management.service.ClientService;
 import com.example.lease_management.Contract;
 import com.example.lease_management.repository.ContractRepository;
+import com.example.lease_management.service.ContractService;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -17,13 +20,15 @@ import java.util.ArrayList;
 public class MainView extends VerticalLayout {
 
 
-    private  final ContractRepository contractRepository;
+
     private final ClientService clientService;
+    private final ContractService contractService;
 
 
-    public MainView( ContractRepository contractRepository, ClientService clientService) {
-        this.contractRepository = contractRepository;
+    public MainView( ClientService clientService, ContractService contractService) {
+
         this.clientService = clientService;
+        this.contractService = contractService;
 
 
         H1 headher= new H1("PANEL GŁÓWNY");
@@ -52,13 +57,21 @@ private void showClientList(){
     clientGrid.addColumn(client -> client.getSurname()).setHeader("Nazwisko");
     clientGrid.addColumn(client -> client.getEmail()).setHeader("adres email");
     clientGrid.addColumn(client -> client.getPhoneNumber()).setHeader("numer telefonu");
+    clientGrid.addComponentColumn(c-> {
+        if(c.getPdfFile()!=null && c.getPdfFile().length>0){
+           Anchor link=  new Anchor("/pdf/client/" +c.getId(), "Zobacz PDF");
+           link.setTarget("_blank");
+           return  link;
+        } else {
+            return new Span("brak pdf");
+        }}).setHeader("DOKUMENTY REJESTROWE KLIENTA PDF");
 
     ListDataProvider<Client> dataProvider = new ListDataProvider<>(allClientList);
     clientGrid.setDataProvider(dataProvider);
     add(clientGrid);
 }
 private void shotContractList(){
-    Iterable<Contract> allContracts = contractRepository.findAll();
+    Iterable<Contract> allContracts = contractService.getAllContracts();
     ArrayList<Contract> contractsArray = new ArrayList<>();
     for (Contract contract: allContracts){
         contractsArray.add(contract);
@@ -73,6 +86,17 @@ private void shotContractList(){
     contractGrid.addColumn(contract->contract.getAmount()).setHeader("wartość umowy");
     contractGrid.addColumn(contract->contract.getInstalmentAmount()).setHeader("wysokość raty");
     contractGrid.addColumn(contract->contract.getInstalmentDate()).setHeader("data wymagalności 1 raty");
+//PONIZEJ DO PODGLADU WGRANEJ UMOWY
+contractGrid.addComponentColumn(c-> {
+   if( c.getPdfFile() !=null && c.getPdfFile().length>0){
+       Anchor link= new Anchor("/pdf/contract/"+ c.getId(), "Zobacz PDF"); //link do kontrolera
+       link.setTarget("_blank"); // otwórz w nowej karcie
+       return link;
+   } else{
+       return new Span("brak pdf");
+   }
+}).setHeader("UMOWA PDF");
+
     ListDataProvider<Contract> contractListDataProvider = new ListDataProvider<>(contractsArray);
     contractGrid.setDataProvider(contractListDataProvider);
     add(contractGrid);

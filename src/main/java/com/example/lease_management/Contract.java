@@ -1,5 +1,6 @@
 package com.example.lease_management;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.jna.platform.unix.solaris.LibKstat;
 import jakarta.persistence.*;
 
@@ -34,8 +35,17 @@ public class Contract {
     @JoinColumn(name="client_id")
     private Client client; //klucz obcy
 
+    @Lob
+    @Column(nullable = true, name = "pdf_file", columnDefinition = "LONGBLOB")
+    private byte[] pdfFile;
+
+
+
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL)
+    @JsonManagedReference
     List<Item> items;
+
+
 
     public Contract() {
     }
@@ -109,5 +119,12 @@ public class Contract {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+    public byte[] getPdfFile() {
+        return pdfFile;
+    }
+
+    public void setPdfFile(byte[] pdfFile) {
+        this.pdfFile = pdfFile;
     }
 }

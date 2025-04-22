@@ -27,9 +27,11 @@ public class ContractController {
 
     }
     @GetMapping("contract/{id}")
-    public ResponseEntity <Optional<Contract>> getOneContract(@PathVariable Integer id){
-        Optional<Contract> oneContract = contractService.getOneContract(id);
-        return  ResponseEntity.ok(oneContract);
+    public ResponseEntity <Contract> getOneContract(@PathVariable Integer id){
+        return contractService.getOneContract(id)
+                .map(u->ResponseEntity.ok(u))
+                .orElseGet(()-> ResponseEntity.notFound().build());
+
     }
     @PostMapping("contract")
             public ResponseEntity <Contract> addContract( @RequestBody Contract newContract){

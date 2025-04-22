@@ -39,7 +39,7 @@ public class ClientService {
         if (updatedClient.getSurname() != null && !updatedClient.getSurname().isEmpty()) client.setSurname(updatedClient.getSurname());
         if (updatedClient.getEmail() != null && !updatedClient.getEmail().isEmpty()) client.setEmail(updatedClient.getEmail());
         if (updatedClient.getPhoneNumber() != null && !updatedClient.getPhoneNumber().isEmpty()) client.setPhoneNumber(updatedClient.getPhoneNumber());
-
+if(updatedClient.getPdfFile()!=null) client.setPdfFile(updatedClient.getPdfFile());
         return clientRepository.save(client);
 
     }

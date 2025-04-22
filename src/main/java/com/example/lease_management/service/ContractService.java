@@ -53,6 +53,8 @@ public class ContractService {
             contract.setInstalmentAmount(updatedContract.getInstalmentAmount());
         if (updatedContract.getInstalmentDate() != null)
             contract.setInstalmentDate(updatedContract.getInstalmentDate());
+        if(updatedContract.getPdfFile() !=null)
+            contract.setPdfFile(updatedContract.getPdfFile());
         return contractRepository.save(contract);
     }
 

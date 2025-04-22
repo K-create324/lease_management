@@ -1,5 +1,6 @@
 package com.example.lease_management;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name="contract_id")
+    @JsonBackReference
     private Contract contract; //klucz obcy
 
     public Item() {
