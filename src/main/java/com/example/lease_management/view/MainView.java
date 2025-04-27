@@ -13,10 +13,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import java.util.ArrayList;
 
-@Route("main-view")
+@Route("/main_view")
+@AnonymousAllowed
 public class MainView extends VerticalLayout {
 
 
@@ -32,6 +34,7 @@ public class MainView extends VerticalLayout {
 
 
         H1 headher= new H1("PANEL GŁÓWNY");
+        Header logOut= new Header();
         Button listaKlientówButton = new Button("Lista klietów -> rozwiń", event ->
         {showClientList();
         });
@@ -40,7 +43,7 @@ public class MainView extends VerticalLayout {
         });
 
 
-        add(headher,listaKlientówButton, listaUmówButton);
+        add(headher,listaKlientówButton, listaUmówButton, logOut);
     }
 
 private void showClientList(){

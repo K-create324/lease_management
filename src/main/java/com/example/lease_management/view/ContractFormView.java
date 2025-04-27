@@ -38,7 +38,7 @@ import java.util.Optional;
 
 @SpringComponent
 @UIScope
-@Route("contract_panel")
+@Route("/contract_panel")
 public class ContractFormView extends VerticalLayout {
     private final ContractService contractService;
     private final ClientRepository clientRepository;
@@ -83,6 +83,7 @@ public class ContractFormView extends VerticalLayout {
     private Upload upload1= new Upload(buffer1);
     private Div uploadSection1=new Div();
     private byte[] uploadedPdfBytes;
+    private Header logOut= new Header();
 
 
     public ContractFormView(ContractService contractService, ClientRepository clientRepository, ContractRepository contractRepository,  ItemService itemService) {
@@ -170,7 +171,7 @@ typeOfItem1.setValue(itemFromContract.getTypeOfItem());
        form2.add(deletedId,deleteButton);
        deleteButton.addClickListener(event->deleteContract());
 
-        add(headher, headher1,form, headher2,form1,headher3,form2);
+        add(headher, headher1,form, headher2,form1,headher3,form2,logOut);
 
 
 }

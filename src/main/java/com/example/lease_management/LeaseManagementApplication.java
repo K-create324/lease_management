@@ -1,5 +1,7 @@
 package com.example.lease_management;
 
+import com.example.lease_management.logg.AppUserDetails;
+import com.example.lease_management.logg.Employee;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,6 +19,8 @@ public class LeaseManagementApplication {
 public CommandLineRunner runApp() {
 	return (args -> {
 		System.out.println("hello");
+
 	});
+
 
 }}

@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Optional;
 
-@Route("client panel")
+@Route("/client_panel")
 public class ClientFormView extends VerticalLayout {
 
    private final ClientService clientService;
@@ -48,7 +48,7 @@ public class ClientFormView extends VerticalLayout {
     private Div uploadSection= new Div();
     private byte[] uploadedPdfBytes;
     private ComboBox<Client> comboBoxEditClient= new ComboBox<>("Wybierz klienta po ID");
-
+private Header logOut= new Header();
     public ClientFormView(ClientService clientService) {
         this.clientService = clientService;
 
@@ -114,7 +114,7 @@ upload.addSucceededListener(event->{
                 }
                 });
 
-        add(headher,headher1,form, headher2, form1,headher3,form2);
+        add(headher,headher1,form, headher2, form1,headher3,form2,logOut);
     }
     private void saveClient(){
         Client client= new Client();
