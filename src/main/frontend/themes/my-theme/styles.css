@@ -1,0 +1,11 @@
+.section-header {
+    margin-top: 30px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+button.send-email {
+    background-color: #2e7d32; /* ciemna zieleń */
+    color: white;
+    font-weight: bold;
+}
