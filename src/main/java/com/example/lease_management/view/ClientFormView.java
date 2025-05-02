@@ -14,6 +14,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.Route;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -49,8 +51,57 @@ public class ClientFormView extends VerticalLayout {
     private byte[] uploadedPdfBytes;
     private ComboBox<Client> comboBoxEditClient= new ComboBox<>("Wybierz klienta po ID");
 private Header logOut= new Header();
+private Binder<Client> binder =  new Binder<>(Client.class);
+    private Binder<Client> binderEdit =  new Binder<>(Client.class);
+
+
     public ClientFormView(ClientService clientService) {
         this.clientService = clientService;
+
+//walidacja pól do dodawania klienta
+        binder.forField(login)
+                .asRequired("Login jest wymagany")
+                .bind(c->c.getLogin(),(c,value)->c.setLogin(value));
+
+        binder.forField(name)
+                        .asRequired("Imie jest wymagane")
+                                .bind(c->c.getName(),(c,value)->c.setName(value));
+
+        binder.forField(surname)
+                        .asRequired("Nazwisko jest wymagane")
+                                .bind(c->c.getSurname(),(c,value)->c.setSurname(value));
+binder.forField(email)
+        .asRequired("Email jest wymagany")
+                .withValidator(new EmailValidator("Niepoprawny adres email"))
+                        .bind(client->client.getEmail(),(client,value)->client.setEmail(value));
+
+binder.forField(phoneNumber)
+        .asRequired("Telefon jest wymagany")
+                .withValidator( phone->phone.matches("\\d{9}"), "Numer telefonu jest wymagany")
+                        .bind(c->c.getPhoneNumber(),(c,value)->c.setPhoneNumber(value));
+
+//walidacja pól edycji
+        binderEdit.forField(loginEdit)
+                .asRequired("Login jest wymagany")
+                .bind(c->c.getLogin(),(c,value)->c.setLogin(value));
+
+        binderEdit.forField(nameEdit)
+                .asRequired("Imie jest wymagane")
+                .bind(c->c.getName(),(c,value)->c.setName(value));
+
+        binderEdit.forField(surnameEdit)
+                .asRequired("Nazwisko jest wymagane")
+                .bind(c->c.getSurname(),(c,value)->c.setSurname(value));
+        binderEdit.forField(emailEdit)
+                .asRequired("Email jest wymagany")
+                .withValidator(new EmailValidator("Niepoprawny adres email"))
+                .bind(client->client.getEmail(),(client,value)->client.setEmail(value));
+
+        binderEdit.forField(phoneNumberEdit)
+                .asRequired("Telefon jest wymagany")
+                .withValidator( phone->phone.matches("\\d{9}"), "Numer telefonu jest wymagany")
+                .bind(c->c.getPhoneNumber(),(c,value)->c.setPhoneNumber(value));
+
 
 
         //combo box do wyboru klienta do edycji
@@ -67,14 +118,9 @@ if(selectedClient!=null){
     surnameEdit.setValue(selectedClient.getSurname());
     phoneNumberEdit.setValue(selectedClient.getPhoneNumber());
     emailEdit.setValue(selectedClient.getEmail());
+    binderEdit.readBean(selectedClient);
 }
-
-
-
 });
-
-
-
 
 //upload pliku pdf
 upload.setAcceptedFileTypes(".pdf");
@@ -116,47 +162,39 @@ upload.addSucceededListener(event->{
 
         add(headher,headher1,form, headher2, form1,headher3,form2,logOut);
     }
-    private void saveClient(){
-        Client client= new Client();
-        client.setLogin(login.getValue());
-        client.setName(name.getValue());
-        client.setSurname(surname.getValue());
-        client.setEmail(email.getValue());
-        client.setPhoneNumber(phoneNumber.getValue());
-        clientService.saveClient(client);
-         Notification.show("Klient zapisany");
+    private void saveClient() {
+        Client client = new Client();
+        if (binder.writeBeanIfValid(client)) {
+            clientService.saveClient(client);
+            Notification.show("Klient zapisany");
+        }
     }
-    private void editClient(){
+    private void editClient() {
 
-
-
-//if(comboBoxEditClient.isEmpty()|| login.isEmpty() || name.isEmpty() || surname.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()){
-//    Notification.show("Proszę o uzupełnienie wszystkich pól");
-//    return;
-//}
         Client clientSelectedFromCombo = comboBoxEditClient.getValue();
-if(clientSelectedFromCombo== null) {
-    Notification.show("nie wybrano klienta do edycji");
-    return;
-}
-    Optional<Client> oneClientFromOptional = clientService.getOneClient(clientSelectedFromCombo.getId());
-    Integer clientIDfromOptional= oneClientFromOptional.orElseThrow(() -> new RuntimeException("nie ma takiego klienta")).getId();
+        if (clientSelectedFromCombo == null) {
+            Notification.show("nie wybrano klienta do edycji");
+            return;
+        }
+        Optional<Client> oneClientFromOptional = clientService.getOneClient(clientSelectedFromCombo.getId());
+        Integer clientIDfromOptional = oneClientFromOptional.orElseThrow(() -> new RuntimeException("nie ma takiego klienta")).getId();
 
 //        Integer id= Integer.parseInt(editId.getValue());
 //        Client updatedClient= new Client();
-        clientSelectedFromCombo.setLogin(loginEdit.getValue());
-        clientSelectedFromCombo.setName(nameEdit.getValue());
-        clientSelectedFromCombo.setSurname(surnameEdit.getValue());
-        clientSelectedFromCombo.setEmail(emailEdit.getValue());
-        clientSelectedFromCombo.setPhoneNumber(phoneNumberEdit.getValue());
-        if(uploadedPdfBytes!=null){
-            clientSelectedFromCombo.setPdfFile(uploadedPdfBytes);
-           Notification.show("Plik wgrany poprawnie");
+//        clientSelectedFromCombo.setLogin(loginEdit.getValue());
+//        clientSelectedFromCombo.setName(nameEdit.getValue());
+//        clientSelectedFromCombo.setSurname(surnameEdit.getValue());
+//        clientSelectedFromCombo.setEmail(emailEdit.getValue());
+//        clientSelectedFromCombo.setPhoneNumber(phoneNumberEdit.getValue());
+        if (binderEdit.writeBeanIfValid(clientSelectedFromCombo)) {
+            if (uploadedPdfBytes != null) {
+                clientSelectedFromCombo.setPdfFile(uploadedPdfBytes);
+                Notification.show("Plik wgrany poprawnie");
+            }
+            clientService.editClient(clientIDfromOptional, clientSelectedFromCombo);
+            Notification.show("Klient zaktualizowany");
         }
-
-        clientService.editClient(clientIDfromOptional,clientSelectedFromCombo);
-        Notification.show("Klient zaktualizowany");
-    }
+}
     private void deleteClient(){
         Integer id= Integer.parseInt(deleteId.getValue());
         clientService.deleteClient(id);
