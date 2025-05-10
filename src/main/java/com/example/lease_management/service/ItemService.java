@@ -68,7 +68,7 @@ public class ItemService {
 //            throw  new RuntimeException("Brak przypisanego przedmiotu dp umowy");
         }
 
-        Item editedItem = items.get(0);
+        Item editedItem = items.getFirst(); //tak było  items.get(0);
         if (newItemData.getTypeOfItem() != null && !newItemData.getTypeOfItem().isEmpty())
             editedItem.setTypeOfItem(newItemData.getTypeOfItem());
         if (newItemData.getMark() != null && !newItemData.getMark().isEmpty()) editedItem.setMark(newItemData.getMark());

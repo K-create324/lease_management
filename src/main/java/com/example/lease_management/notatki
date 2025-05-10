@@ -5,4 +5,5 @@ rozdzielenie widoków klienta i pracownika
 możliwość dodawania usera z poziomu aplikacji i ustawiania zaszyfrowane hasła w bazie
 logika biznesowa, finkcje przypimnien o ratach itp
 widoki dla klienta do zarzadzania umowami, widzi swoja umwe, moze wysałć wnioski o zmianę czegos itp
-dokończyc walidatora na kontrakcie
+dodanie CI do pierwszego projektu na git Projekty dla juniora Java
+dodanie filtrowaania , sortowania

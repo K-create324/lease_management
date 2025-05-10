@@ -70,7 +70,7 @@ public class SecurityConfig   {
                 )
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests  // Nowa metoda
                         .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/main_view").hasRole("EMPLOYEE" )
+//                        .requestMatchers("/main_view").hasRole("EMPLOYEE" )
                         .requestMatchers("/dashboard").hasAnyRole("EXTERNAL_USER","EMPLOYEE" )
 
 
